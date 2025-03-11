@@ -3,7 +3,9 @@ import React from 'react'
 const ListProjects = () => {
   return (
     <div>
-      list ListProjects
+      Pending builts,
+      deleted, active 
+      disabled
     </div>
   )
 }

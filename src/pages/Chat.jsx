@@ -10,6 +10,7 @@ import { motion } from 'motion/react'
 import FeedbackForm from '../components/FeedbackForm'
 import {toast} from 'sonner';
 import { getResult } from '../api/axiosConfig'
+import { FaQuestion } from 'react-icons/fa'
 
 
 const Chat = () => {
@@ -63,12 +64,20 @@ const Chat = () => {
 
       {/* Profile Image - click to toggle Expandible Side menu */}
       <section
-        className={`w-10 h-10 rounded-full fixed bottom-8 left-8 shadow-lg shadow-[#131313] hover:shadow-inner hover:shadow-gray-800 cursor-pointer ${
+        className={`w-10 h-10 rounded-full md:hidden block xl:hidden 2xl:hidden sm:hidden lg:hidden fixed top-4 right-6 shadow-lg shadow-[#131313] hover:shadow-inner hover:shadow-gray-800 cursor-pointer ${
           open ? 'hidden' : 'block'
         }`}
         onClick={() => setOpen(!open)}
       >
-        <img src='avatar.png' alt='' className='' />
+        <img src='/avatar.png' alt='' className='' />
+      </section>
+      <section
+        className={`w-10 h-10 rounded-full md:block hidden xl:block 2xl:block sm:block lg:block fixed bottom-6 left-6 shadow-lg shadow-[#131313] hover:shadow-inner hover:shadow-gray-800 cursor-pointer ${
+          open ? 'hidden' : 'block'
+        }`}
+        onClick={() => setOpen(!open)}
+      >
+        <img src='/avatar.png' alt='' className='' />
       </section>
 
       {/* Main Component */}
@@ -79,18 +88,19 @@ const Chat = () => {
           setOpenFeedbackModal={setOpenFeedbackModal}
         />
         {/* Feedback icon */}
-        <section className='fixed cursor-pointer z-50 bottom-8 right-6'>
+        <section className='fixed cursor-pointer z-50 bottom-6 right-6'>
           <IconButton
             onClick={() => setOpenFeedbackModal(!openFeedbackModal)}
             color='blue'
-            className='cursor-pointer'
+            className='cursor-pointer rounded-full bg-inherit border-2 border-gray-700 shadow-xl'
           >
-            <VscFeedback size={24} />
+            <FaQuestion size={24} />
           </IconButton>
         </section>
 
           <div className='absolute bottom-10 w-full'>
             <BuilderPromptForm />
+            
           </div>
       </main>
     </div>

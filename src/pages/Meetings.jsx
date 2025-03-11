@@ -21,6 +21,7 @@ const Meetings = () => {
   const [alternativeHost, setAlternativeHost] = useState([]);
   const [hostVideo, setHostVideo] = useState(false);
   const [startTime, setStartTime] = useState("");
+  const [instantBuild, setInstantBuild] = useState(true);
   const [meetingJoinURL, setMeetingJoinURL] = useState("");
 
   const navigate = useNavigate();
@@ -73,6 +74,13 @@ const Meetings = () => {
       name: "Host Video",
       value: hostVideo,
       onChange: (e) => setHostVideo(e.target.value),
+      required: false,
+      type: "checkbox",
+    },
+    {
+      name: "Instant Build After Meeting?",
+      value: instantBuild,
+      onChange: (e) => setInstantBuild(e.target.value),
       required: false,
       type: "checkbox",
     },

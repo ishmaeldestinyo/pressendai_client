@@ -329,7 +329,8 @@ const BuilderPromptForm = () => {
       </div>
       <small className="absolute text-xs top-2  inset-x-0 text-center z-30 w-fit mx-auto"
       >
-        By messaging Pressend, you agree to our <Link className='text-[#2299fb] hover:transition' to={'/legals'}>Terms</Link> and have read our <Link  className='text-[#2299fb] hover:transition' to={'/legals'}>Privacy Policy </Link>.
+        By messaging Pressend, you agree to our <Link className='mb-2 text-[#2299fb] hover:transition' to={'/legals'}>Terms</Link> and have read our <Link  className='text-[#2299fb] hover:transition' to={'/legals'}>Privacy Policy </Link>.
+                <br /> <br /> <span className="text-[11px] mt-2  md:font-normal xl:font-normal lg:font-normal font-light text-blue-200 ">Beta 1.0 Release</span>
       </small>
       
      
