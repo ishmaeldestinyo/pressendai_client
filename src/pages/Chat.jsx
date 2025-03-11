@@ -27,7 +27,7 @@ const Chat = () => {
       try {
         const response = await getResult(`/api/users/profile`);
         if(response.status == 200) {
-          console.log(response.data)
+          localStorage.setItem("user", JSON.stringify(response.data.user));
           setUser(response.data.user);
         }
       } catch (error) {
@@ -59,7 +59,7 @@ const Chat = () => {
           <MdViewSidebar size={24} />
         </div>
 
-        <ExpandibleSideMenu user={user}/>
+        <ExpandibleSideMenu/>
       </motion.div>
 
       {/* Profile Image - click to toggle Expandible Side menu */}

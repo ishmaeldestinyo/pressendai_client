@@ -10,10 +10,15 @@ import {motion} from 'motion/react';
 import { getResult } from '../api/axiosConfig'
 import {toast} from 'sonner';
 
-const ExpandibleSideMenu = ({user}) => {
+const ExpandibleSideMenu = () => {
   const [offsetMenuOpen, setOffsetMenuOpen] = useState(false)
 
   // const [projects, setProjects] = useState([]);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem('user')));
+  }, [])
 
   // Last 7d, yesterday, Last 2wk, Last month, 90d ago, on scroll down, show more
   const projects = [
