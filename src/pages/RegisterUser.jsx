@@ -15,6 +15,7 @@ function RegisterUser() {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [foundError, setFoundError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -68,6 +69,7 @@ function RegisterUser() {
     
         // Allow free input without validation here.
         setPhoneNumber(value);
+        setFoundError(false);
         setLoading(false);
       },
       onBlur: () => {
@@ -85,6 +87,8 @@ function RegisterUser() {
           toast.error(
             "Phone number must start with country code, eg. +234 for NG, +1 for US, +44 for UK, +81 for Japan, etc."
           );
+          setFoundError(true);
+          return ;
         }
       },
       icon: <IoCall size={24} />,
@@ -193,6 +197,7 @@ function RegisterUser() {
                   loading={loading}
                   role="button"
                   type="submit"
+                  disabled={foundError}
                   color="primary"
                   fullWidth
                 >
