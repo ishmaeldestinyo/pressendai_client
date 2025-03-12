@@ -17,7 +17,7 @@ const ExpandibleSideMenu = () => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    if(localStorage.getItem('user')) {
+    if(localStorage.getItem('user') != undefined) {
       setUser(JSON.parse(localStorage.getItem('user')));
     }
   }, [])
