@@ -17,10 +17,16 @@ const ExpandibleSideMenu = () => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    if(localStorage.getItem('user') !== undefined) {
-      setUser(JSON.parse(localStorage.getItem('user')));
+    const userData = localStorage.getItem('user');
+    if (userData) { // Only parse if userData exists and is not null
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error parsing user data from localStorage:', error);
+      }
     }
-  }, [])
+  }, []);
+  
 
   // Last 7d, yesterday, Last 2wk, Last month, 90d ago, on scroll down, show more
   const projects = [
