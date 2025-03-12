@@ -17,7 +17,9 @@ const ExpandibleSideMenu = () => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem('user')));
+    if(localStorage.getItem('user')) {
+      setUser(JSON.parse(localStorage.getItem('user')));
+    }
   }, [])
 
   // Last 7d, yesterday, Last 2wk, Last month, 90d ago, on scroll down, show more
@@ -196,9 +198,9 @@ const ExpandibleSideMenu = () => {
         <div className='w-auto items-center'>
           <div className='flex justify-between'>
             <div className='hold-profile-details'>
-              <p>{user.fullname}</p>
+              <p>{user?.fullname || 'Pressender'}</p>
               <span className='text-xs -mt-1 text-gray-400'>
-                {user.email && user.email.split("@")[0].substring(0, 5)+'**'+user.email.split("@")[1].substring(1,)}
+                {user?.email && user.email.split("@")[0].substring(0, 5)+'**'+user.email.split("@")[1].substring(1,)}
               </span>
             </div>
             <div className=' mt-1 hover:text-blue-500 transition cursor-pointer m'>
