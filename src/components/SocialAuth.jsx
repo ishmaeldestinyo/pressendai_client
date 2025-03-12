@@ -20,13 +20,6 @@ const SocialAuth = () => {
       },
       name: 'Github'
     },
-    {
-      icon: <SiZoom size={24} />,
-      action: () => {
-        window.location.href = `${import.meta.env.VITE_BASE_URL}/api/meetings/zoom`
-      },
-      name: ''
-    },
   ]
 
   return (

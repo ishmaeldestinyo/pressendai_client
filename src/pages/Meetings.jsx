@@ -8,7 +8,10 @@ import {
   Input,
   Button,
   Checkbox,
+  IconButton,
 } from "@material-tailwind/react";
+import { MdCopyAll } from "react-icons/md";
+import { LiaTimesSolid } from "react-icons/lia";
 
 const Meetings = () => {
   const [loading, setLoading] = useState(false);
@@ -22,7 +25,8 @@ const Meetings = () => {
   const [hostVideo, setHostVideo] = useState(false);
   const [startTime, setStartTime] = useState("");
   const [instantBuild, setInstantBuild] = useState(true);
-  const [meetingJoinURL, setMeetingJoinURL] = useState("");
+  const [meetingData, setMeetingData] = useState({});
+  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -93,9 +97,23 @@ const Meetings = () => {
       type: "checkbox",
     },
   ];
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopyClick = () => {
+    if (meetingData?.join_url) {
+      navigator.clipboard
+        .writeText(meetingData.join_url)
+        .then(() => {
+          setCopySuccess(true);
+          setTimeout(() => setCopySuccess(false), 2000); // Reset success message after 2 seconds
+        })
+        .catch(() => {
+          setCopySuccess(false); // Handle clipboard copy failure if needed
+        });
+    }
+  };
 
   // submit new meeting
-
   const createMeetingHandler = async (e) => {
     e.preventDefault();
 
@@ -106,6 +124,7 @@ const Meetings = () => {
       zoom_user_default_password: userDefaultPassword,
       meeting_invitees: meetingInvitees,
       topic,
+      build_after_meeting: instantBuild,
       start_time: startTime,
       host_video: hostVideo,
     };
@@ -114,22 +133,22 @@ const Meetings = () => {
       const response = await postResult("/api/meetings", payload);
 
       if (response.status == 201) {
-        setMeetingJoinURL(response.data.data?.join_url);
+        setMeetingData(response.data.data);
+        toast.success(response.data.message);
+        setOpen(!open);
+        return;
       }
     } catch (error) {
-      console.log(error.message)
-      if(error.response.data && !error.response.data?.message) {
-
-        if (
-          error.response.status == 401
-        ) {
+      console.log(error.message);
+      if (error.response.data && !error.response.data?.message) {
+        if (error.response.status == 401) {
           toast.error("Please login to continue...");
           setTimeout(() => {
             navigate("/auth/login", { state: { from: "/meetings" } });
           }, 1000);
           return;
         }
-  
+
         if (
           error.response.status == 401 &&
           error.response.data?.includes("Your current subscription")
@@ -141,9 +160,7 @@ const Meetings = () => {
           return;
         }
       }
-      if (
-        error.response.data?.message?.includes("zoom")
-      ) {
+      if (error.response.data?.message?.includes("zoom")) {
         toast.error(error.response.data?.message);
         setTimeout(() => {
           navigate("/auth/login", { state: { from: "/meetings" } });
@@ -151,12 +168,37 @@ const Meetings = () => {
         return;
       }
       toast.error(error.response.data?.message);
-      return ;
+      return;
     }
   };
   return (
     <div>
-      <div className="md:w-4/5 mx-auto w-full md:pt-5 p-5">
+      <div className="md:w-4/5 relative mx-auto w-full md:pt-5 p-5">
+        {open && (
+        <div className="absolute z-30 bg-[#131313] md:left-44  md:right-44 rounded-2xl -bottom-4 p-5 text-gray-100">
+          <div className="my-2 flex justify-end text-red-600">
+          <LiaTimesSolid className="cursor-pointer" onClick={() => setOpen(!open)} size={24}/>
+          </div>
+          <div className="grid grid-cols-12 gap-x-3">
+            <div className="col-span-6">
+              <Link to={meetingData?.start_url} className="py-2 px-3 rounded text-white bg-[#2299fb]" target="blank">
+                <span className="text-white text-sm">Start Now</span>
+              </Link>
+            </div>
+            <div className="col-span-6 flex items-center gap-x-1 text-sm">
+              Invitees URL
+              <MdCopyAll
+                className="cursor-pointer hover:text-blue-300 transition"
+                size={24}
+                onClick={handleCopyClick}
+              />
+              {copySuccess && (
+                <span className="text-green-400 ml-2 text-xs">Copied!</span>
+              )}
+            </div>
+          </div>
+        </div>
+        )}
         <div className="text-gray-100 w-fit mx-auto md:flex items-center mt-2 md:text-2xl xl:text-2xl 2xl:text-2xl xs:text-lg sm:text-xl">
           <Link to={"/"}>
             <img
