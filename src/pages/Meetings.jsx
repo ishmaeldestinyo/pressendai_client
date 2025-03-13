@@ -139,7 +139,7 @@ const Meetings = () => {
         return;
       }
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
       if (error.response.data && !error.response.data?.message) {
         if (error.response.status == 401) {
           toast.error("Please login to continue...");
@@ -174,31 +174,6 @@ const Meetings = () => {
   return (
     <div>
       <div className="md:w-4/5 relative mx-auto w-full md:pt-5 p-5">
-        {open && (
-        <div className="absolute z-30 bg-[#131313] md:left-44  md:right-44 rounded-2xl -bottom-4 p-5 text-gray-100">
-          <div className="my-2 flex justify-end text-red-600">
-          <LiaTimesSolid className="cursor-pointer" onClick={() => setOpen(!open)} size={24}/>
-          </div>
-          <div className="grid grid-cols-12 gap-x-3">
-            <div className="col-span-6">
-              <Link to={meetingData?.start_url} className="py-2 px-3 rounded text-white bg-[#2299fb]" target="blank">
-                <span className="text-white text-sm">Start Now</span>
-              </Link>
-            </div>
-            <div className="col-span-6 flex items-center gap-x-1 text-sm">
-              Invitees URL
-              <MdCopyAll
-                className="cursor-pointer hover:text-blue-300 transition"
-                size={24}
-                onClick={handleCopyClick}
-              />
-              {copySuccess && (
-                <span className="text-green-400 ml-2 text-xs">Copied!</span>
-              )}
-            </div>
-          </div>
-        </div>
-        )}
         <div className="text-gray-100 w-fit mx-auto md:flex items-center mt-2 md:text-2xl xl:text-2xl 2xl:text-2xl xs:text-lg sm:text-xl">
           <Link to={"/"}>
             <img
@@ -268,6 +243,38 @@ const Meetings = () => {
             Create meeting
           </Button>
         </div>
+        {meetingData?.start_url && (
+          <div className="md:flex justify-between mt-5 gap-x-3">
+          <div className="w-full ">
+            <Link
+              to={meetingData?.start_url}
+              className="  text-white"
+              target="blank"
+            >
+              <Button fullWidth className="" color="green">
+                <span className="text-white text-sm">Start Now</span>
+              </Button>
+            </Link>
+          </div>
+          <div className="w-full md:mt-0 mt-3">
+          <Button
+        
+              onClick={handleCopyClick}
+          fullWidth className="flex items-center gap-x-2 cursor-pointer " color="blue">
+                <span className="text-white text-sm">Invitees URL</span>
+                {" "}
+            <MdCopyAll
+              className="cursor-pointer hover:text-blue-300 transition"
+              size={24}
+            />
+            {copySuccess && (
+              <span className="text-green-400 ml-2 text-xs">Copied!</span>
+            )}
+              </Button>
+            
+          </div>
+        </div>
+        )}
       </form>
     </div>
   );
