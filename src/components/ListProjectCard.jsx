@@ -16,6 +16,7 @@ function ListProjectCard() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(4);
   const [totalPages, setTotalPages] = useState(1); // Total number of pages
+  const [deleted, setDeleted] = useState(false);
 
   const navigate = useNavigate();
 
@@ -40,19 +41,22 @@ function ListProjectCard() {
     };
 
     fetchProjects();
-  }, [page, limit]); // Re-fetch when either page or limit changes
+  }, [page, limit, deleted]); // Re-fetch when either page or limit changes
 
   const deleteProjectHandler = async (projectId) => {
     try {
       const response = await deleteResult(`/api/projects/${projectId}`);
       if(response.status == 410) {
-        toast.success(response.data.message)
+        toast.success(response.data.message);
+        setDeleted(true);
+        setLoading(false);
       }
     } catch(error) {
       toast.error(error?.response?.data?.message || error.message);
 
     } finally {
       setLoading(false)
+      setDeleted(true);
     }
   }
 

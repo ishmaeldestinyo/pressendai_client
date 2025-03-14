@@ -9,7 +9,7 @@ import { LuGithub, LuGlobe } from "react-icons/lu";
 import { motion } from "motion/react";
 import { getResult } from "../api/axiosConfig";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ExpandibleSideMenu = () => {
   const [offsetMenuOpen, setOffsetMenuOpen] = useState(false);
@@ -20,16 +20,22 @@ const ExpandibleSideMenu = () => {
 
   const hasRun = useRef(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const userData = localStorage.getItem("user");
-    if (userData) {
+  
+    if (userData && userData !== "undefined") {  // Check if it's not "undefined"
       try {
         setUser(JSON.parse(userData));
       } catch (error) {
         console.error("Error parsing user data from localStorage:", error);
       }
+    } else {
+      navigate('/auth/login');
     }
   }, []);
+  
 
   useEffect(() => {
     const fetchProjects = async () => {
