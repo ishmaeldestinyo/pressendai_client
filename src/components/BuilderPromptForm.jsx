@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { CircularProgress, Tooltip } from "@mui/joy";
 import { motion } from "motion/react";
-import { LuSend } from "react-icons/lu";
+import { LuPhoneCall, LuSend } from "react-icons/lu";
 import { useEffect, useRef, useState } from "react";
 import { CiSettings } from "react-icons/ci";
 import { FiPhoneCall } from "react-icons/fi";
@@ -42,7 +42,7 @@ const BuilderPromptForm = () => {
         // Call your extract text function
         const text = await extractTextFromFile(file);
         setFileText(text); // Store the extracted text
-        toast.info("File successfully read!")
+        toast.info("File successfully read!");
       } catch (error) {
         toast.error(error.message);
       }
@@ -176,7 +176,7 @@ const BuilderPromptForm = () => {
     },
     {
       action: () => navigate("/meetings"),
-      icon: <FcConferenceCall  size={24} />,
+      icon: <FcConferenceCall size={24} />,
       name: "Host/Invite Meetings + AI Developer",
     },
   ];
@@ -216,7 +216,10 @@ const BuilderPromptForm = () => {
   };
 
   return (
-    <form onSubmit={promptHandler} className="md:w-3/5 lg:w-3/5 sm:w-4/5 xs:w-4/5 w-10/12 2xl:w-3/5 xl:w-3/5 z-0 mx-auto relative">
+    <form
+      onSubmit={promptHandler}
+      className="md:w-3/5 lg:w-3/5 sm:w-4/5 xs:w-4/5 w-10/12 2xl:w-3/5 xl:w-3/5 z-0 mx-auto relative"
+    >
       <input
         type="file"
         id="file-upload"
@@ -225,7 +228,6 @@ const BuilderPromptForm = () => {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-
 
       {/* Show Submit Icon */}
       <section className="absolute z-50 w-fit bottom-5 cursor-pointer right-5">
@@ -303,20 +305,22 @@ const BuilderPromptForm = () => {
 
       {/* Social Media */}
       <div className="absolute z-10 bottom-0 w-full">
-      <div className="mb-5  md:w-auto w-fit mx-auto md:hidden lg:block xl:block sm:hidden hidden xs:hidden 2xl:block">
-            <h3 className="text-lg md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl w-fit mx-auto">What can I help with?</h3>
-        <br/>
-        {promptExamples.map((example, i) => (
-          <div
-            className={`inline-block space-x-3 items-center mt-1 rounded-3xl text-3xl mx-2 border border-gray-800 p-1 gap-x-2 `}
-            key={i}
-          >
-            <div className="flex items-center gap-2 text-xs cursor-pointer  text-blue-gray-400 hover:text-blue-gray-800">
-              {example}
+        <div className="mb-5  md:w-auto w-fit mx-auto md:hidden lg:block xl:block sm:hidden hidden xs:hidden 2xl:block">
+          <h3 className="text-lg md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl w-fit mx-auto">
+            What can I help with?
+          </h3>
+          <br />
+          {promptExamples.map((example, i) => (
+            <div
+              className={`inline-block space-x-3 items-center mt-1 rounded-3xl text-3xl mx-2 border border-gray-800 p-1 gap-x-2 `}
+              key={i}
+            >
+              <div className="flex items-center gap-2 text-xs cursor-pointer  text-blue-gray-400 hover:text-blue-gray-800">
+                {example}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
         <Textarea
           onFocus={() => setLoading(false)}
           value={prompt}
@@ -326,13 +330,27 @@ const BuilderPromptForm = () => {
           rows={6}
         />
       </div>
-      <small className="absolute text-xs top-2  inset-x-0 text-center z-30 w-fit mx-auto"
-      >
-        By messaging Pressend, you agree to our <Link className='mb-2 text-[#2299fb] hover:transition' to={'/legals'}>Terms</Link> and have read our <Link  className='text-[#2299fb] hover:transition' to={'/legals'}>Privacy Policy </Link>.
-                <br /> <br /> <span className="text-[11px] mt-2  md:font-normal xl:font-normal lg:font-normal font-light text-blue-200 ">Beta 2.0 Release</span>
+      <small className="absolute text-xs top-2  inset-x-0 text-center z-30 w-fit mx-auto">
+        By messaging Pressend, you agree to our{" "}
+        <Link className="mb-2 text-[#2299fb] hover:transition" to={"/legals"}>
+          Terms
+        </Link>{" "}
+        and have read our{" "}
+        <Link className="text-[#2299fb] hover:transition" to={"/legals"}>
+          Privacy Policy{" "}
+        </Link>
+        .
+        <br/>
+       <br />{" "}
+        <span className="text-[11px] mt-2  md:font-normal xl:font-normal lg:font-normal font-light text-blue-200 ">
+          Beta 2.0 Release
+        </span><br />
+        <a href={`tel:${import.meta.env.VITE_AI_PHONE_NUMBER}`} className="text-[11px] md:hidden lg:hidden w-fit mx-auto xl:hidden 2xl:hidden mt-2 flex gap-x-2 items-center md:font-normal xl:font-normal lg:font-normal font-light text-blue-200 ">
+        <LuPhoneCall />
+        {import.meta.env.VITE_AI_PHONE_NUMBER}
+        </a>
       </small>
-      
-     
+
     </form>
   );
 };

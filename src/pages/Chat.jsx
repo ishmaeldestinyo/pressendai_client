@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
+import {toast} from 'sonner';
 import { MdViewSidebar } from 'react-icons/md'
 import ChooseProduct from '../components/Navbar'
 import ExpandibleSideMenu from '../components/ExpandibleSideMenu'
 import { useSearchParams } from 'react-router-dom'
-import { VscFeedback } from 'react-icons/vsc'
 import BuilderPromptForm from '../components/BuilderPromptForm'
 import { IconButton } from '@material-tailwind/react'
 import { motion } from 'motion/react'
 import FeedbackForm from '../components/FeedbackForm'
-import {toast} from 'sonner';
 import { getResult } from '../api/axiosConfig'
 import { FaQuestion } from 'react-icons/fa'
 
