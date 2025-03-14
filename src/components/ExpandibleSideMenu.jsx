@@ -20,10 +20,8 @@ const ExpandibleSideMenu = () => {
 
   const hasRun = useRef(false);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
-    const userData = localStorage.getItem("user");
+    const userData = localStorage.getItem("user") || 'undefined';
   
     if (userData && userData !== "undefined") {  // Check if it's not "undefined"
       try {
@@ -43,8 +41,7 @@ const ExpandibleSideMenu = () => {
           setProjects(response.data.data);
         }
       } catch (error) {
-        toast.error(error.response.data);
-        return;
+        setProjects([]);
       }
     };
 
