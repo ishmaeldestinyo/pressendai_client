@@ -82,9 +82,11 @@ const Meetings = () => {
       type: "checkbox",
     },
     {
-      name: "Instant Build After Meeting?",
+      name: "Instant Build",
       value: instantBuild,
-      onChange: (e) => setInstantBuild(e.target.value),
+      onChange: (e) => {
+        setInstantBuild(e.target.checked);
+      },
       required: false,
       type: "checkbox",
     },
@@ -115,6 +117,8 @@ const Meetings = () => {
 
   // submit new meeting
   const createMeetingHandler = async (e) => {
+
+    setLoading(true);
     e.preventDefault();
 
     const payload = {
@@ -135,10 +139,12 @@ const Meetings = () => {
       if (response.status == 201) {
         setMeetingData(response.data.data);
         toast.success(response.data.message);
+        setLoading(false);
         setOpen(!open);
         return;
       }
     } catch (error) {
+      setLoading(false);
       console.log(error);
       if (error.response.data && !error.response.data?.message) {
         if (error.response.status == 401) {

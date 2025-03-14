@@ -1,6 +1,7 @@
 import React from 'react';
+import {toast} from 'sonner';
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
 import { MdOutlineDataUsage } from "react-icons/md";
 import { RiLogoutCircleLine } from "react-icons/ri";
@@ -8,30 +9,48 @@ import { LuPackagePlus } from "react-icons/lu";
 import { Button } from '@material-tailwind/react';
 import { Divider } from '@mui/joy';
 import { FaUserEdit } from "react-icons/fa";
+import { postResult } from '../api/axiosConfig';
 
 const OffsetExpandibleSideMenu = ({ isOpen }) => {
+
+
+  const navigate = useNavigate();
 
     const menuItem = [
         {
             name: "My Projects",
             url: '/projects',
+            action: () => {},
             icon: <AiOutlineAppstoreAdd size={20}/>
         },
        
         {
             name: "Upgrade Subscription",
             url: '/subscriptions',
+            action: () => {},
             icon: <LuPackagePlus   size={20}/>
 
         },
          {
             name: "My Profile",
             url: '/profile',
+            action: () => {},
             icon: <FaUserEdit  size={20}/>
         },
         {
             name: "Logout",
             url: '',
+            action: async () => {
+              try {
+                const response = await postResult('/api/users/logout');
+                if(response.status === 204) {
+                toast.success(response?.data?.message || 'Logout successful');
+                  navigate('/');
+                }
+              } catch(error) {
+                toast.error(error.message || error?.response?.data || 'Oops! Something went wrong!');
+              }
+            },
             icon: <RiLogoutCircleLine  size={20}/>
 
         },
@@ -52,7 +71,9 @@ const OffsetExpandibleSideMenu = ({ isOpen }) => {
   
       {menuItem && menuItem.length > 0 && menuItem.map((item, i) => (
         <Link to={item.url}>
-        <Button key={i} fullWidth type='button' className='flex bg-inherit items-center gap-x-2 capitalize font-medium text-gray-300 offset-title cursor-pointer' >{item.icon} {item.name}</Button>
+        <Button key={i} onClick={() => {
+          item.url !== '' ? ' ': item.action();
+        }} fullWidth type='button' className='flex bg-inherit items-center gap-x-2 capitalize font-medium text-gray-300 offset-title cursor-pointer' >{item.icon} {item.name}</Button>
         </Link>
       ))}
     </motion.div>
