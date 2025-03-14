@@ -31,8 +31,6 @@ const ExpandibleSideMenu = () => {
       } catch (error) {
         console.error("Error parsing user data from localStorage:", error);
       }
-    } else {
-      navigate('/auth/login');
     }
   }, []);
   
