@@ -12,6 +12,7 @@ import Subscription from './pages/Subscription'
 import BillingUsage from './pages/BillingUsage'
 import ProjectDetail from './pages/ProjectDetail'
 import EditProject from './pages/EditProject'
+import NewBuild from './pages/NewBuild'
 import ListProjects from './pages/ListProjects'
 import AccountVerification from './pages/AccountVerification'
 import Meetings from './pages/Meetings'
@@ -75,6 +76,7 @@ function App () {
         <Route path='/auth/confirm' element={<AccountVerification />} />
         <Route path='/projects' element={<ListProjects />} />
         <Route path='/projects/:id/edit' element={<EditProject />} />
+        <Route path='/projects/:id/new' element={<NewBuild />} />
         <Route path='/meetings' element={<Meetings />} />
         <Route path='/legals' element={<Legals />} />
         <Route path='/profile' element={<UserProfile />} />

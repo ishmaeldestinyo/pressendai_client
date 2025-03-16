@@ -21,15 +21,22 @@ const ExpandibleSideMenu = () => {
   const hasRun = useRef(false);
 
   useEffect(() => {
-    const userData = localStorage.getItem("user") || 'undefined';
   
-    if (userData && userData !== "undefined") {  // Check if it's not "undefined"
       try {
-        setUser(JSON.parse(userData));
+        
+        const response = getResult(`/api/users/profile`);
+
+        if(response.data?.user) {
+          setUser(JSON.parse(response?.data?.user));
+          console.log(response.data?.user)
+          setUser(localStorage.getItem("user") || {});
+
+        }
+
       } catch (error) {
+
         console.error("Error parsing user data from localStorage:", error);
       }
-    }
   }, []);
   
 
@@ -58,7 +65,6 @@ const ExpandibleSideMenu = () => {
 
   const projectActionItem = [
     { name: "Share", action: () => {}, icon: <FaShareAlt /> },
-    { name: "Browse", action: () => {}, icon: <LuGlobe /> },
     { name: "Github", action: () => {}, icon: <LuGithub /> },
     { name: "Update", action: () => {}, icon: <FaEdit /> },
     { name: "Delete", action: () => {}, icon: <FaTrash /> },
@@ -86,25 +92,30 @@ const ExpandibleSideMenu = () => {
           {projects &&
             projects.length > 0 &&
             projects.map((project, key) => (
-              <Link
-                to={`/projects/${project._id}`}
-                onMouseEnter={() => {
-                  setHovered(true);
-                  setHovererIndex(key);
-                }}
-                onMouseLeave={() => {
-                  setHovered(false);
-                  setHovererIndex(null);
-                }}
-                key={key}
-                fullWidth
+              <div
+               
                 className="text-sm relative my-0.5 border-y border-transparent hover:border-gray-900/45 bg-inherit cursor-pointer flex justify-between items-center"
               >
+                <Link
+                 to={`/projects/${project._id}`}
+                 onMouseEnter={() => {
+                   setHovered(true);
+                   setHovererIndex(key);
+                 }}
+                 onMouseLeave={() => {
+                   setHovered(false);
+                   setHovererIndex(null);
+                 }}
+                 key={key}
+                 fullWidth
+                >
                 <span className="text-gray-300 font-normal">
                   {project?.prompt?.length > 30
                     ? `${project.prompt?.slice(0, 30)}...`
                     : project?.prompt}
                 </span>
+                </Link>
+
                 <IconButton
                   onClick={() => setItemOpen(!itemOpen)}
                   className={`bg-inherit cursor-pointer rounded-full ${
@@ -132,7 +143,7 @@ const ExpandibleSideMenu = () => {
                     </div>
                   ))}
                 </motion.div>
-              </Link>
+              </div>
             ))}
         </div>
       </section>
@@ -155,7 +166,7 @@ const ExpandibleSideMenu = () => {
         <div className="w-auto items-center">
           <div className="flex justify-between">
             <div className="hold-profile-details">
-              <p>{user?.fullname || "Pressender"}</p>
+              <p>{user?.fullname?.length > 30 ? `${user?.fullname.slice(0, 20)}...` : user?.fullname || "Pressender"}</p>
               <span className="text-xs -mt-1 text-gray-400">
                 {user?.email &&
                   user.email.split("@")[0].substring(0, 5) +

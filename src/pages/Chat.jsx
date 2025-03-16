@@ -36,12 +36,8 @@ const Chat = () => {
       }
     }
 
-    return () => {
-      if(!hasRun.current) {
-        fetchProfile()
-      }
-      hasRun.current = true;
-    }
+    fetchProfile()
+    hasRun.current = true;
 
   }, [])
   
