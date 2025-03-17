@@ -205,13 +205,13 @@ const BuilderPromptForm = () => {
           navigate("/auth/login");
         }, 1000);
       }
-      if (error.status == 404) {
+      if (error.status == 404 || error?.status == 400) {
         toast.error(errorMessage);
         setTimeout(function () {
           navigate("/auth/login");
         }, 1000);
       }
-      toast.error(errorMessage);
+      toast.error("Please authenticate your github to be able to manage your project");
     }
   };
 
@@ -312,6 +312,13 @@ const BuilderPromptForm = () => {
           <br />
           {promptExamples.map((example, i) => (
             <div
+            onClick = {() => {
+              setPrompt(example);
+              setFileText("");
+              setStackUsed("");
+              setProjectName("");
+              setMoreVertOpen(false);
+            }}
               className={`inline-block space-x-3 items-center mt-1 rounded-3xl text-3xl mx-2 border border-gray-800 p-1 gap-x-2 `}
               key={i}
             >
