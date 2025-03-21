@@ -109,14 +109,16 @@ function ListProjectCard() {
                     <CircularProgress size="sm" />
                   </td>
                 </tr>
+              ) : projects.length == 0 ? (
+                <div>No project found</div>
               ) : (
-                projects.map((project, index) => (
+                projects && projects.length > 0 && projects.map((project, index) => (
                   <tr key={index}>
                     <td className="p-4 border-b border-blue-gray-50">
                       <div className="flex items-center gap-3">
                         <div className="flex flex-col">
                           <p className="block font-sans text-sm antialiased font-normal leading-normal relaxed text-gray-300">
-                            {project?.name.slice(0, 30) ?? project?.prompt?.slice(0, 30)}
+                            {project?.name && project?.name.slice(0, 30) ? project?.prompt?.slice(0, 30) : project?.name || 'No project name'}
                           </p>
                         </div>
                       </div>

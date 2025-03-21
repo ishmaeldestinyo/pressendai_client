@@ -18,6 +18,7 @@ import AccountVerification from './pages/AccountVerification'
 import Meetings from './pages/Meetings'
 import UserProfile from './pages/UserProfile'
 import Legals from './pages/Legals'
+import { StreamProvider } from './context/StreamContext'
 
 function App () {
   const hasRun = useRef()
@@ -66,7 +67,8 @@ function App () {
   }, [])
 
   return (
-    <>
+    <StreamProvider>
+
       <Toaster closeButton richColors />
       <Routes>
         <Route path='/' element={<Chat />} />
@@ -76,7 +78,7 @@ function App () {
         <Route path='/auth/confirm' element={<AccountVerification />} />
         <Route path='/projects' element={<ListProjects />} />
         <Route path='/projects/:id/edit' element={<EditProject />} />
-        <Route path='/projects/:id/new' element={<NewBuild />} />
+        <Route path='/app/:id' element={<NewBuild />} />
         <Route path='/meetings' element={<Meetings />} />
         <Route path='/legals' element={<Legals />} />
         <Route path='/profile' element={<UserProfile />} />
@@ -93,7 +95,7 @@ function App () {
         
         <Route path='*' element={<Error404 />} />
       </Routes>
-    </>
+    </StreamProvider>
   )
 }
 

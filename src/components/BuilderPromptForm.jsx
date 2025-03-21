@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { LuPhoneCall, LuSend } from "react-icons/lu";
 import { useEffect, useRef, useState } from "react";
 import { CiSettings } from "react-icons/ci";
+import {useStream} from '../context/StreamContext'
 import { FiPhoneCall } from "react-icons/fi";
 import { GrAttachment } from "react-icons/gr";
 import { getResult, postResult } from "../api/axiosConfig";
@@ -34,6 +35,9 @@ const BuilderPromptForm = () => {
   const [fileText, setFileText] = useState("");
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+
+  const { setProjectId, setReader, setOutput, decoder } = useStream();
+
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -184,37 +188,92 @@ const BuilderPromptForm = () => {
   const promptHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      const result = await postResult("/api/projects", {
-        prompt: prompt || fileText,
-        stack_used: stackUsed,
-        name: projectName,
-        user_action: "TEXT_PROMPT",
-      });
-      setLoading(false);
+    setOutput("");
 
-      if (result.status == 201) {
-        navigate(`/projects/${result.data.data?._id}`);
+    try {
+
+      if(!prompt) {
+        toast.error("Prompt cannot be blank!")
+        setLoading(false);
+        return
+      }
+
+      if(prompt.length < 10)  {
+        toast.error("Please vividly describe your project!")
+        setLoading(false);
+        return
+      }
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/projects`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          prompt: prompt || fileText,
+          stack_used: stackUsed,
+          name: projectName,
+          user_action: "TEXT_PROMPT",
+        }),
+      });
+
+      console.log(response.status)
+
+      if(response.status != 201) {
+        toast.error("Please authorize your github");
+        setTimeout(function() {
+          navigate("/auth/login")
+        }, 1000);
+        return ;
+      }
+
+      if(response.status == 422) {
+        toast.error("Github repository name already exist, please delete the github repository or rename your prompt");
+        return ;
+      }
+  
+      if (!response.body) throw new Error("No response body received");
+  
+      const reader = response.body.getReader();
+      setReader(reader); // Store reader in context
+  
+      let isFirstChunk = true;
+      let projectId = null;
+  
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+  
+        const decodedText = decoder.decode(value);
+  
+        if (isFirstChunk) {
+          try {
+            const json = JSON.parse(decodedText);
+            projectId = json.id;
+            setProjectId(projectId); // Save project ID in context
+            
+            // Navigate only after setting projectId
+            navigate(`/app/${projectId}`);
+          } catch (error) {
+            toast.error("Please login to continue!");
+            setTimeout(() => {
+              navigate("/auth/login")
+            }, 1000);
+          }
+          isFirstChunk = false;
+        } else {
+          setOutput((prev) => prev + decodedText);
+        }
       }
     } catch (error) {
-      const errorMessage = error?.response?.data || "Network Error!";
+      console.error("Error fetching stream:", error);
+      setOutput("An error occurred. Please try again.");
+    } finally {
       setLoading(false);
-      if (error.status == 401) {
-        toast.error("Please login to continue...");
-        setTimeout(function () {
-          navigate("/auth/login");
-        }, 1000);
-      }
-      if (error.status == 404 || error?.status == 400) {
-        toast.error(errorMessage);
-        setTimeout(function () {
-          navigate("/auth/login");
-        }, 1000);
-      }
-      toast.error("Please authenticate your github to be able to manage your project");
     }
   };
-
+  
+  
   return (
     <form
       onSubmit={promptHandler}
