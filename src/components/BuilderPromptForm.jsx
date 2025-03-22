@@ -239,9 +239,7 @@ const BuilderPromptForm = () => {
             setProjectId(projectId); // Save project ID in context
           } catch (error) {
             toast.error(decodedText);
-            setTimeout(() => {
-              navigate("/auth/login");
-            }, 1000);
+           return ;
           }
           isFirstChunk = false;
         } else {
@@ -252,10 +250,19 @@ const BuilderPromptForm = () => {
             return;
           }
 
-          // Navigate only after setting projectId
-          navigate(`/app/${projectId}`);
+          if(decodedText == "Request failed with status code 401") {
+            toast.error("Please authorize your github account to continue!");
+            setTimeout(() => {
+              navigate("/auth/login");
+            }, 1000);
+            return ;
+          } else {
           setOutput((prev) => prev + decodedText);
+
+          }
         }
+        // Navigate only after setting projectId
+        navigate(`/app/${projectId}`);
       }
     } catch (error) {
       console.log(error);
