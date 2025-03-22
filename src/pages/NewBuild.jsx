@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useRef, useState, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useStream } from "../context/StreamContext";
 import { Box, Divider, Tooltip } from "@mui/joy";
 import Editor from "@monaco-editor/react";
 import { VscOpenPreview } from "react-icons/vsc";
-import { IoMdCodeDownload } from "react-icons/io";
+import { IoMdHome } from "react-icons/io";
 import { GrUpdate } from "react-icons/gr";
 import { IconButton } from "@material-tailwind/react";
 import { formatAISnippet } from "../utils/formatAISnippet";
@@ -13,18 +13,20 @@ const NewBuild = () => {
   const { projectId } = useParams();
   const { reader, output, setOutput, decoder } = useStream();
   const [streaming, setStreaming] = useState(false);
-  const [snippet, setSnippet] = useState([]); // Parsed files
-  const [selectedFile, setSelectedFile] = useState(null); // Track selected file
-
+  const [selectedFile, setSelectedFile] = useState(null);
+  
+  const navigate = useNavigate();
   const editorRef = useRef();
+
+  // Memoized formatted snippets
+  const snippets = useMemo(() => formatAISnippet(output), [output]);
 
   useEffect(() => {
     if (!reader || streaming) return;
 
-    const streamResponse = async () => {
-      setStreaming(true);
-      let tempOutput = ""; 
+    setStreaming(true);
 
+    const streamResponse = async () => {
       try {
         while (true) {
           const { value, done } = await reader.read();
@@ -33,7 +35,6 @@ const NewBuild = () => {
           const decodedValue = decoder.decode(value);
           console.log("Chunk received:", decodedValue);
 
-          tempOutput += decodedValue;
           setOutput((prev) => prev + decodedValue);
         }
       } catch (error) {
@@ -46,11 +47,18 @@ const NewBuild = () => {
     streamResponse();
   }, [reader]);
 
+  // Auto-select first file and ensure the correct content is displayed
   useEffect(() => {
-    if (!output) return;
-    const formattedSnippets = formatAISnippet(output);
-    setSnippet(formattedSnippets);
-  }, [output]);
+    if (snippets.length > 0) {
+      const firstFile = snippets[0];
+      
+      setSelectedFile((prev) => {
+        // Update only if the file exists in snippets
+        const updatedFile = snippets.find((f) => f.filePath === prev?.filePath);
+        return updatedFile || firstFile;
+      });
+    }
+  }, [snippets]);
 
   const onMount = (editor) => {
     editorRef.current = editor;
@@ -60,61 +68,54 @@ const NewBuild = () => {
   const actionMenu = [
     { name: "Update", action: () => {}, icon: <GrUpdate size={20} /> },
     { name: "Preview", action: () => {}, icon: <VscOpenPreview size={20} /> },
-    { name: "Download", action: () => {}, icon: <IoMdCodeDownload size={20} /> },
+    { name: "Home", action: () => navigate("/"), icon: <IoMdHome size={20} /> },
   ];
 
   return (
-    <div className="md:grid block grid-cols-12 w-full h-screen relative">
-      {/* Sidebar */}
-      <div className="md:block lg:block xl:block 2xl:block col-span-2 overflow-y-auto bg-[#1E1E1E] border-r border-[#333333] md:h-full xl:h-full h-auto lg:h-full 2xl:h-full p-1.5 md:p-5">
-        <div className="overflow-x-auto flex gap-3 pb-2 w-full justify-evenly md:gap-3 xl:gap-3 2xl:gap-3 sm:gap-1">
+    <div className="grid grid-cols-12 w-full h-screen">
+      {/* Sidebar - File List */}
+      <div className="col-span-2 bg-[#1E1E1E] overflow-auto border-r border-gray-700 p-4">
+        {/* Top Actions */}
+        <div className="flex justify-between mb-4">
           {actionMenu.map((action, key) => (
-            <div key={key}>
-              <Tooltip color="primary" title={action.name} arrow placement="top-start">
-                <IconButton className="cursor-pointer">{action.icon}</IconButton>
-              </Tooltip>
-            </div>
+            <Tooltip key={key} title={action.name} arrow>
+              <IconButton onClick={action.action}>{action.icon}</IconButton>
+            </Tooltip>
           ))}
         </div>
 
-        <div className="md:block xl:block lg:block 2xl:block hidden">
-          <Divider>Recent</Divider>
-          {/* File List */}
-          {snippet.length > 0 ? (
-            <ul className="text-white mt-3">
-              {snippet.map((file, index) => (
-                <li
-                  key={index}
-                  className={`cursor-pointer border-gray-800 border-b hover:text-gray-500 hover:underline text-gray-300 py-2 ${
-                    selectedFile === file.filePath ? "text-yellow-300" : ""
-                  }`}
-                  onClick={() => {
-                    setSelectedFile(file.filePath);
-                    setOutput(file.content);
-                  }}
-                >
-                  {file.filePath}
-                </li>
-              ))}
-            </ul>
+        <Divider>Files</Divider>
+
+        {/* File List */}
+        <ul className="mt-3 text-white overflow-x-auto">
+          {snippets.length > 0 ? (
+            snippets.map((file, index) => (
+              <li
+                key={index}
+                className={`cursor-pointer py-2 px-3 border-b border-gray-800 hover:text-gray-400 ${
+                  selectedFile?.filePath === file.filePath ? "bg-gray-700 text-yellow-300" : ""
+                }`}
+                onClick={() => setSelectedFile(file)}
+              >
+                {file.filePath}
+              </li>
+            ))
           ) : (
             <p className="text-gray-500">No files yet</p>
           )}
-        </div>
+        </ul>
       </div>
 
-      {/* Editor */}
+      {/* Code Editor */}
       <div className="col-span-10 h-full">
-        <Box sx={{ minHeight: "100vh", minWidth: "100%", background: "#0f0a19", color: "gray" }}>
+        <Box sx={{ height: "100vh", background: "#0f0a19", color: "gray" }}>
           <Editor
-            onValidate={(markers) => markers.forEach((marker) => console.log("onValidate:", marker.message))}
             onMount={onMount}
             theme="vs-dark"
             height="100vh"
             width="100%"
-            defaultLanguage="javascript"
-            value={output}
-            defaultValue={output}
+            language={selectedFile?.language || "javascript"}
+            value={selectedFile?.content || "// Select a file to view content"}
           />
         </Box>
       </div>
