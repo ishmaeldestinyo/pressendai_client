@@ -48,7 +48,7 @@ const NewBuild = () => {
         }
       } catch (error) {
         console.error("Frontend Streaming Error:", error);
-        setOutput((prev) => prev + "\n\n⚠️ An error occurred, but partial content is saved.");
+        setOutput((prev) => prev);
       } finally {
         setStreaming(false);
       }

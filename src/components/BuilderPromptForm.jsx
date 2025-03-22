@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { LuPhoneCall, LuSend } from "react-icons/lu";
 import { useEffect, useRef, useState } from "react";
 import { CiSettings } from "react-icons/ci";
-import {useStream} from '../context/StreamContext'
+import { useStream } from "../context/StreamContext";
 import { FiPhoneCall } from "react-icons/fi";
 import { GrAttachment } from "react-icons/gr";
 import { getResult, postResult } from "../api/axiosConfig";
@@ -37,7 +37,6 @@ const BuilderPromptForm = () => {
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
   const { setProjectId, setReader, setOutput, decoder } = useStream();
-
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -191,89 +190,90 @@ const BuilderPromptForm = () => {
     setOutput("");
 
     try {
-
-      if(!prompt) {
-        toast.error("Prompt cannot be blank!")
+      if (!prompt) {
+        toast.error("Prompt cannot be blank!");
         setLoading(false);
-        return
+        return;
       }
 
-      if(prompt.length < 10)  {
-        toast.error("Please vividly describe your project!")
+      if (prompt.length < 10) {
+        toast.error("Please vividly describe your project!");
         setLoading(false);
-        return
+        return;
       }
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/projects`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          prompt: prompt || fileText,
-          stack_used: stackUsed,
-          name: projectName,
-          user_action: "TEXT_PROMPT",
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/projects`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            prompt: prompt || fileText,
+            stack_used: stackUsed,
+            name: projectName,
+            user_action: "TEXT_PROMPT",
+          }),
+        }
+      );
 
-      console.log(response.status)
-
-      if(response.status != 201) {
-        toast.error("Please authorize your github");
-        setTimeout(function() {
-          navigate("/auth/login")
-        }, 1000);
-        return ;
-      }
-
-      if(response.status == 422) {
-        toast.error("Github repository name already exist, please delete the github repository or rename your prompt");
-        return ;
-      }
-  
       if (!response.body) throw new Error("No response body received");
-  
+
       const reader = response.body.getReader();
       setReader(reader); // Store reader in context
-  
+
       let isFirstChunk = true;
       let projectId = null;
-  
+
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-  
+
         const decodedText = decoder.decode(value);
-  
+
         if (isFirstChunk) {
           try {
             const json = JSON.parse(decodedText);
             projectId = json.id;
             setProjectId(projectId); // Save project ID in context
-            
-            // Navigate only after setting projectId
-            navigate(`/app/${projectId}`);
           } catch (error) {
-            toast.error("Please login to continue!");
+            toast.error(decodedText);
             setTimeout(() => {
-              navigate("/auth/login")
+              navigate("/auth/login");
             }, 1000);
           }
           isFirstChunk = false;
         } else {
+          if (decodedText == "Request failed with status code 422") {
+            toast.error(
+              "Github repository name already exist, please delete the github repository or rename your prompt"
+            );
+            return;
+          }
+
+          // Navigate only after setting projectId
+          navigate(`/app/${projectId}`);
           setOutput((prev) => prev + decodedText);
         }
       }
     } catch (error) {
-      console.error("Error fetching stream:", error);
+      console.log(error);
+
+      let err = JSON.parse(error) || error;
+      console.log(err);
+      toast.error("Please authorize your github account to continue!");
+      setTimeout(() => {
+        navigate("/auth/login");
+      }, 1000);
+
       setOutput("An error occurred. Please try again.");
+      return;
     } finally {
       setLoading(false);
     }
   };
-  
-  
+
   return (
     <form
       onSubmit={promptHandler}
@@ -371,13 +371,13 @@ const BuilderPromptForm = () => {
           <br />
           {promptExamples.map((example, i) => (
             <div
-            onClick = {() => {
-              setPrompt(example);
-              setFileText("");
-              setStackUsed("");
-              setProjectName("");
-              setMoreVertOpen(false);
-            }}
+              onClick={() => {
+                setPrompt(example);
+                setFileText("");
+                setStackUsed("");
+                setProjectName("");
+                setMoreVertOpen(false);
+              }}
               className={`inline-block space-x-3 items-center mt-1 rounded-3xl text-3xl mx-2 border border-gray-800 p-1 gap-x-2 `}
               key={i}
             >
@@ -406,17 +406,20 @@ const BuilderPromptForm = () => {
           Privacy Policy{" "}
         </Link>
         .
-        <br/>
-       <br />{" "}
+        <br />
+        <br />{" "}
         <span className="text-[11px] mt-2  md:font-normal xl:font-normal lg:font-normal font-light text-blue-200 ">
           Beta 2.0 Release
-        </span><br />
-        <a href={`tel:${import.meta.env.VITE_AI_PHONE_NUMBER}`} className="text-[11px] md:hidden lg:hidden w-fit mx-auto xl:hidden 2xl:hidden mt-2 flex gap-x-2 items-center md:font-normal xl:font-normal lg:font-normal font-light text-blue-200 ">
-        <LuPhoneCall />
-        {import.meta.env.VITE_AI_PHONE_NUMBER}
+        </span>
+        <br />
+        <a
+          href={`tel:${import.meta.env.VITE_AI_PHONE_NUMBER}`}
+          className="text-[11px] md:hidden lg:hidden w-fit mx-auto xl:hidden 2xl:hidden mt-2 flex gap-x-2 items-center md:font-normal xl:font-normal lg:font-normal font-light text-blue-200 "
+        >
+          <LuPhoneCall />
+          {import.meta.env.VITE_AI_PHONE_NUMBER}
         </a>
       </small>
-
     </form>
   );
 };
