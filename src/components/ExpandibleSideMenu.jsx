@@ -45,6 +45,7 @@ const ExpandibleSideMenu = () => {
       try {
         const response = await getResult(`/api/projects`);
         if (response.status == 200) {
+          console.log(response.data.data)
           setProjects(response.data.data);
         }
       } catch (error) {

@@ -185,6 +185,7 @@ const BuilderPromptForm = () => {
   ];
 
   const promptHandler = async (e) => {
+    
     e.preventDefault();
     setLoading(true);
     setOutput("");
@@ -239,6 +240,12 @@ const BuilderPromptForm = () => {
             setProjectId(projectId); // Save project ID in context
           } catch (error) {
             toast.error(decodedText);
+
+            if(decodedText == "Please login to continue") {
+              setTimeout(() => {
+                navigate("/auth/login");
+              }, 1000);
+            }
            return ;
           }
           isFirstChunk = false;

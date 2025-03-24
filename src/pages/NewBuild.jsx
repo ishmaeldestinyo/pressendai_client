@@ -8,6 +8,7 @@ import { IoMdHome } from "react-icons/io";
 import { GrUpdate } from "react-icons/gr";
 import { IconButton } from "@material-tailwind/react";
 import { formatAISnippet } from "../utils/formatAISnippet";
+import { toast } from "sonner";
 
 const NewBuild = () => {
   const { projectId } = useParams();
@@ -66,8 +67,12 @@ const NewBuild = () => {
   };
 
   const actionMenu = [
-    { name: "Update", action: () => {}, icon: <GrUpdate size={20} /> },
-    { name: "Preview", action: () => {}, icon: <VscOpenPreview size={20} /> },
+    { name: "Update", action: () => {
+      navigate(`/projects/${projectId}/edit`)
+    }, icon: <GrUpdate size={20} /> },
+    { name: "Preview", action: () => {
+      toast.info("Available in Pressend Beta Release 2.0 loading...")
+    }, icon: <VscOpenPreview size={20} /> },
     { name: "Home", action: () => navigate("/"), icon: <IoMdHome size={20} /> },
   ];
 
@@ -115,7 +120,7 @@ const NewBuild = () => {
             height="100vh"
             width="100%"
             language={selectedFile?.language || "javascript"}
-            value={selectedFile?.content || "// Select a file to view content"}
+            value={selectedFile?.content || "// Creating github repository..."}
           />
         </Box>
       </div>
