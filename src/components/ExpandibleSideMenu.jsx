@@ -146,6 +146,9 @@ const ExpandibleSideMenu = () => {
                 </motion.div>
               </div>
             ))}
+            {projects.length <= 0 && (
+              <div className="w-fit mx-auto text-gray-400">No project found!</div>
+            )}
         </div>
       </section>
 
