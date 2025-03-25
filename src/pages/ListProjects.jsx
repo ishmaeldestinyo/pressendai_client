@@ -70,7 +70,7 @@ const ListProjects = () => {
         }`}
         onClick={() => setOpen(!open)}
       >
-        <img src={user?.avatar_url ?? '/avatar.png'} alt='' className='rounded-full' />
+        <img src={user?.avatar_url || '/avatar.png'} alt='' className='rounded-full' />
       </section>
       <section
         className={`w-10 h-10 rounded-full md:block hidden xl:block 2xl:block sm:block lg:block fixed bottom-6 left-6 shadow-lg shadow-[#131313] hover:shadow-inner hover:shadow-gray-800 cursor-pointer ${

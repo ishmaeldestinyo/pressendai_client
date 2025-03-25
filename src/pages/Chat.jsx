@@ -68,8 +68,7 @@ const Chat = () => {
         onClick={() => setOpen(!open)}
       >
         <img
-          src={!user?.avatar_url ? user?.avatar_url : "/avatar.png"}
-          alt=""
+          src={user?.avatar_url ? user?.avatar_url : "/avatar.png"}
           className="rounded-full"
         />
       </section>
@@ -78,8 +77,7 @@ const Chat = () => {
         onClick={() => setOpen(!open)}
       >
         <img
-            src={!user?.avatar_url ? user?.avatar_url : "/avatar.png"}
-            alt="profile picture"
+            src={user?.avatar_url ? user?.avatar_url : "/avatar.png"}
             className="w-10 mt-1 h-10 rounded-full"
           />
       </section>

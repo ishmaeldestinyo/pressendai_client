@@ -162,9 +162,8 @@ const ExpandibleSideMenu = () => {
       >
         <div className="w-fit cursor-pointer">
           <img
-            src={user?.avatar_url ?? "/avatar.png"}
-            alt="profile picture"
-            className="w-10 mt-1 h-10 rounded-full"
+            src={user?.avatar_url || "/avatar.png"}
+im            className="w-10 mt-1 h-10 rounded-full"
           />
         </div>
         <div className="w-auto items-center">
