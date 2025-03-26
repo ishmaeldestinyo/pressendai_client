@@ -21,22 +21,21 @@ const ExpandibleSideMenu = () => {
   const hasRun = useRef(false);
 
   useEffect(() => {
-  
+    const fetchProfile = async () => {
       try {
-        
-        const response = getResult(`/api/users/profile`);
-
-        if(response.data?.user) {
-          setUser(JSON.parse(response?.data?.user));
-          console.log(response.data?.user)
-          setUser(localStorage.getItem("user") || {});
-
+        const response = await getResult(`/api/users/profile`);
+        if (response.status == 200) {
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+          setUser(response.data.user);
         }
-
       } catch (error) {
-
-        console.error("Error parsing user data from localStorage:", error);
+        setUser({});
+        return;
       }
+    };
+
+    fetchProfile();
+    hasRun.current = true;
   }, []);
   
 
@@ -94,7 +93,7 @@ const ExpandibleSideMenu = () => {
             projects.length > 0 &&
             projects.map((project, key) => (
               <div
-               
+               key={key}
                 className="text-sm relative my-0.5 border-y border-transparent hover:border-gray-900/45 bg-inherit cursor-pointer flex justify-between items-center"
               >
                 <Link
@@ -110,7 +109,7 @@ const ExpandibleSideMenu = () => {
                  key={key}
                  fullWidth
                 >
-                <span className="text-gray-300 font-normal">
+                <span className="text-gray-300 text-sm font-normal">
                   {project?.prompt?.length > 30
                     ? `${project.prompt?.slice(0, 30)}...`
                     : project?.prompt}
@@ -163,13 +162,13 @@ const ExpandibleSideMenu = () => {
         <div className="w-fit cursor-pointer">
           <img
             src={user?.avatar_url || "/avatar.png"}
-im            className="w-10 mt-1 h-10 rounded-full"
+            className="w-10 mt-1 h-10 rounded-full"
           />
         </div>
         <div className="w-auto items-center">
           <div className="flex justify-between">
             <div className="hold-profile-details">
-              <p>{user?.fullname?.length > 30 ? `${user?.fullname.slice(0, 20)}...` : user?.fullname || "Pressender"}</p>
+              <p>{user?.fullname && user?.fullname.length > 5 ? `${user?.fullname?.slice(0, 8)}...` : "Pressender"}</p>
               <span className="text-xs -mt-1 text-gray-400">
                 {user?.email &&
                   user.email.split("@")[0].substring(0, 5) +
