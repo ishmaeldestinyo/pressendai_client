@@ -274,8 +274,6 @@ const BuilderPromptForm = () => {
     } catch (error) {
       console.log(error);
 
-      let err = JSON.parse(error) || error;
-      console.log(err);
       toast.error("Please authorize your github account to continue!");
       setTimeout(() => {
         navigate("/auth/login");
