@@ -235,7 +235,7 @@ const BuilderPromptForm = () => {
 
         if (isFirstChunk) {
           try {
-            const json = JSON.parse(decodedText);
+            const json = JSON.parse(decodedText) || decodedText;
             projectId = json.id;
             setProjectId(projectId); // Save project ID in context
           } catch (error) {

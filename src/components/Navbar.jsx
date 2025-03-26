@@ -2,7 +2,7 @@ import { IconButton } from "@material-tailwind/react";
 import { Button, Tooltip } from "@mui/joy";
 import React, { useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
-import { IoFlashOutline } from "react-icons/io5";
+import { IoFlashOutline, IoPerson } from "react-icons/io5";
 import { LuPhoneCall } from "react-icons/lu";
 import { Link, useSearchParams } from "react-router-dom";
 
@@ -56,13 +56,15 @@ const ChooseProduct = () => {
           )}
 
           <div className="">
-            <Button
-              startDecorator={<IoFlashOutline size={20} />}
-              className="capitalize cursor-pointer"
-              style={builderBtnStyle}
-            >
-              What's new?
-            </Button>
+            <Link to={"/auth/login"}>
+              <Button
+                startDecorator={<IoPerson size={20} />}
+                className="capitalize cursor-pointer"
+                style={builderBtnStyle}
+              >
+                Login/Register
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
