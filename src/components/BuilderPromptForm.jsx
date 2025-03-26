@@ -272,14 +272,10 @@ const BuilderPromptForm = () => {
         navigate(`/app/${projectId}`);
       }
     } catch (error) {
-      console.log(error);
 
-      toast.error("Please authorize your github account to continue!");
-      setTimeout(() => {
-        navigate("/auth/login");
-      }, 1000);
+      toast.error(error);
 
-      setOutput("An error occurred. Please try again.");
+      setOutput(error || "An error occurred. Please try again.");
       return;
     } finally {
       setLoading(false);
