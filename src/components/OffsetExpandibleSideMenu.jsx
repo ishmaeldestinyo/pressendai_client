@@ -48,6 +48,7 @@ const OffsetExpandibleSideMenu = ({ isOpen }) => {
                   navigate('/');
                 }
               } catch(error) {
+                console.log(error)
                 toast.error(error.message || error?.response?.data || 'Oops! Something went wrong!');
               }
             },
