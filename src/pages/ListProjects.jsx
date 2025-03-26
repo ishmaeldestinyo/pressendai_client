@@ -28,11 +28,9 @@ const ListProjects = () => {
       try {
         const response = await getResult(`/api/users/profile`);
         if(response.status == 200) {
-          localStorage.setItem("user", JSON.stringify(response.data.user));
           setUser(response.data.user);
         }
       } catch (error) {
-        toast.error(error.response.data);
         return ;
       }
     }
