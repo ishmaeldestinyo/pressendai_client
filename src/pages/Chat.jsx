@@ -29,6 +29,7 @@ const Chat = () => {
           setUser(response.data.user);
         }
       } catch (error) {
+        setUser({});
         return;
       }
     };

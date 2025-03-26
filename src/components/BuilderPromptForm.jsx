@@ -250,6 +250,8 @@ const BuilderPromptForm = () => {
           }
           isFirstChunk = false;
         } else {
+        console.log(decodedText)
+
           if (decodedText == "Request failed with status code 422") {
             toast.error(
               "Github repository name already exist, please delete the github repository or rename your prompt"
@@ -272,7 +274,7 @@ const BuilderPromptForm = () => {
         navigate(`/app/${projectId}`);
       }
     } catch (error) {
-
+      console.log("error: ", error);
       toast.error(error);
 
       setOutput(error || "An error occurred. Please try again.");
