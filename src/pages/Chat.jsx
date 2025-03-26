@@ -27,10 +27,8 @@ const Chat = () => {
         if (response.status == 200) {
           localStorage.setItem("user", JSON.stringify(response.data.user));
           setUser(response.data.user);
-          console.log(response.data.user);
         }
       } catch (error) {
-        toast.error(`${error}`);
         return;
       }
     };
