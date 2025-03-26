@@ -30,6 +30,7 @@ const Chat = () => {
           console.log(response.data.user);
         }
       } catch (error) {
+        console.log(error);
         toast.error(error.response.data);
         return;
       }
