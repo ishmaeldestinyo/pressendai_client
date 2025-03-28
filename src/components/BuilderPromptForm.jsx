@@ -422,13 +422,13 @@ const BuilderPromptForm = () => {
           Beta 2.0 Release
         </span>
         <br />
-        <a
+        {/* <a
           href={`tel:${import.meta.env.VITE_AI_PHONE_NUMBER}`}
           className="text-[11px] md:hidden lg:hidden w-fit mx-auto xl:hidden 2xl:hidden mt-2 flex gap-x-2 items-center md:font-normal xl:font-normal lg:font-normal font-light text-blue-200 "
         >
           <LuPhoneCall />
           {import.meta.env.VITE_AI_PHONE_NUMBER}
-        </a>
+        </a> */}
       </small>
     </form>
   );

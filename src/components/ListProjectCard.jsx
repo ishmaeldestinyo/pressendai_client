@@ -1,14 +1,15 @@
-import {
-  IconButton
-} from "@material-tailwind/react";
+import { IconButton } from "@material-tailwind/react";
 import { CircularProgress, Tooltip } from "@mui/joy";
 import React, { useEffect, useState } from "react";
 import { IoChatbubbles } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteResult, getResult } from "../api/axiosConfig";
 import { FiEdit } from "react-icons/fi";
-import {toast} from 'sonner'
+import { toast } from "sonner";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { LuPresentation } from "react-icons/lu";
+import { MdPreview } from "react-icons/md";
+import { VscOpenPreview } from "react-icons/vsc";
 
 function ListProjectCard() {
   const [projects, setProjects] = useState([]);
@@ -46,19 +47,18 @@ function ListProjectCard() {
   const deleteProjectHandler = async (projectId) => {
     try {
       const response = await deleteResult(`/api/projects/${projectId}`);
-      if(response.status == 410) {
+      if (response.status == 410) {
         toast.success(response.data.message);
         setDeleted(true);
         setLoading(false);
       }
-    } catch(error) {
+    } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
-
     } finally {
-      setLoading(false)
+      setLoading(false);
       setDeleted(true);
     }
-  }
+  };
 
 
   return (
@@ -84,7 +84,6 @@ function ListProjectCard() {
               </Link>
             </div>
           </div>
-         
         </div>
         <div className="p-6 px-0 overflow-scroll">
           <table className="w-full mt-4 text-left table-auto min-w-max">
@@ -112,13 +111,17 @@ function ListProjectCard() {
               ) : projects.length == 0 ? (
                 <div>No project found</div>
               ) : (
-                projects && projects.length > 0 && projects.map((project, index) => (
+                projects &&
+                projects.length > 0 &&
+                projects.map((project, index) => (
                   <tr key={index}>
                     <td className="p-4 border-b border-blue-gray-50">
                       <div className="flex items-center gap-3">
                         <div className="flex flex-col">
                           <p className="block font-sans text-sm antialiased font-normal leading-normal relaxed text-gray-300">
-                            {project?.name && project?.name.slice(0, 30) ? project?.prompt?.slice(0, 30) : project?.name || 'No project name'}
+                            {project?.name && project?.name.slice(0, 30)
+                              ? project?.prompt?.slice(0, 30)
+                              : project?.name || "No project name"}
                           </p>
                         </div>
                       </div>
@@ -127,9 +130,13 @@ function ListProjectCard() {
                       <div className="w-max">
                         <div
                           className={`relative grid items-center px-2 py-1 font-sans text-xs font-bold text-${
-                            project.status === "ACTIVE" ? "green" : "text-gray-100"
+                            project.status === "ACTIVE"
+                              ? "green"
+                              : "text-gray-100"
                           }-900 uppercase rounded-md select-none whitespace-nowrap bg-${
-                            project.status === "ACTIVE" ? "green" : "text-gray-100"
+                            project.status === "ACTIVE"
+                              ? "green"
+                              : "text-gray-100"
                           }-500/20`}
                         >
                           <span>{project.status}</span>
@@ -138,21 +145,66 @@ function ListProjectCard() {
                     </td>
                     <td className="p-4 border-b border-blue-gray-50">
                       <div className="w-fit mx-auto flex justify-start gap-x-10">
-                        <Tooltip arrow color="primary" placement="right-start" title="Delete">
-                        <IconButton role="button" type="button" onClick={() => {
-                          deleteProjectHandler(project?._id);
-                        }} className="cursor-pointer bg-inherit rounded-full">
-                          <RiDeleteBin6Line size={20} className="hover:text-red-700 text-gray-300" />
-                        </IconButton>
+                        <Tooltip
+                          arrow
+                          color="primary"
+                          placement="right-start"
+                          title="Delete"
+                        >
+                          <IconButton
+                            role="button"
+                            type="button"
+                            onClick={() => {
+                              deleteProjectHandler(project?._id);
+                            }}
+                            className="cursor-pointer bg-inherit rounded-full"
+                          >
+                            <RiDeleteBin6Line
+                              size={20}
+                              className="hover:text-red-700 text-gray-300"
+                            />
+                          </IconButton>
                         </Tooltip>
-                        <Tooltip arrow color="primary"  placement="right-start" title="Edit">
-                        <IconButton role="button" type="button" onClick={() => {
-                          navigate(`/projects/${project?._id}/edit`);
-                        }} className="cursor-pointer bg-inherit rounded-full">
-                          <FiEdit size={20} className="hover:text-orange-400 text-gray-300" />
-                        </IconButton>
+                        <Tooltip
+                          arrow
+                          color="primary"
+                          placement="right-start"
+                          title="Preview"
+                        >
+                          <IconButton
+                            role="button"
+                            type="button"
+                            onClick={() => {
+                              navigate(`/projects/${project?._id}/preview`);
+                            }}
+                            className="cursor-pointer bg-inherit rounded-full"
+                          >
+                            <VscOpenPreview
+                              size={20}
+                              className="hover:text-blue-300 text-gray-300"
+                            />
+                          </IconButton>
                         </Tooltip>
-
+                        <Tooltip
+                          arrow
+                          color="primary"
+                          placement="right-start"
+                          title="Edit"
+                        >
+                          <IconButton
+                            role="button"
+                            type="button"
+                            onClick={() => {
+                              navigate(`/projects/${project?._id}/edit`);
+                            }}
+                            className="cursor-pointer bg-inherit rounded-full"
+                          >
+                            <FiEdit
+                              size={20}
+                              className="hover:text-orange-400 text-gray-300"
+                            />
+                          </IconButton>
+                        </Tooltip>
                       </div>
                     </td>
                   </tr>
@@ -162,7 +214,7 @@ function ListProjectCard() {
           </table>
         </div>
         <div className="flex items-center justify-between p-4 border-t border-blue-gray-50">
-        <p className="block font-sans text-sm antialiased font-normal leading-normal relaxed text-gray-300">
+          <p className="block font-sans text-sm antialiased font-normal leading-normal relaxed text-gray-300">
             Page {page} of {totalPages}
           </p>
           <div className="flex gap-2">
