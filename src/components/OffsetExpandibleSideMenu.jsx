@@ -23,13 +23,11 @@ const OffsetExpandibleSideMenu = ({ isOpen }) => {
             action: () => {},
             icon: <AiOutlineAppstoreAdd size={20}/>
         },
-       
         {
             name: "Upgrade Subscription",
             url: '/subscriptions',
             action: () => {},
             icon: <LuPackagePlus   size={20}/>
-
         },
          {
             name: "My Profile",

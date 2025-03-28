@@ -23,7 +23,7 @@ const ChooseProduct = () => {
           </Link>
         </div>
         <div className="cursor-pointer md:flex items-center justify-evenly xl:flex lg:flex gap-x-4 2xl:flex sm:block xs:block hidden">
-          {/* <div
+          <div
             className=""
             onClick={() => {
               navigator.clipboard
@@ -53,7 +53,7 @@ const ChooseProduct = () => {
           </div>
           {copySuccess && (
             <span className="text-green-400 ml-2 text-[10.30px]">Copied!</span>
-          )} */}
+          )}
 
           <div className="">
             <Link to={"/auth/login"}>

@@ -20,35 +20,35 @@ function UserProfile() {
 
     const userField = [
         {
-            name: "Profile Image",
+            name: "Profile Image (Optional)",
             icon: <FaUser size={24} />,
             value: profileImg,
             onChange: () => fileInputRef.current.click(), // Trigger the file input click
             type: 'button' // Not a real input field, handled via the icon click
         },
         {
-            name: "Fullname",
+            name: "Fullname (Optional)",
             icon: <FaUserEdit size={24} />,
             value: fullname,
             onChange: e => setFullname(e.target.value),
             type: 'text',
         },
         {
-            name: "Password",
+            name: "Password (Optional)",
             icon: <FaFingerprint size={24} />,
             value: password,
             onChange: e => setPassword(e.target.value),
             type: 'password'
         },
         {
-            name: "Email",
+            name: "Email (Optional)",
             icon: <MdMarkEmailRead size={24} />,
             value: email,
             onChange: e => setEmail(e.target.value),
             type: 'email'
         },
         {
-            name: "Tel",
+            name: "Tel (Optional)",
             icon: <FaPhone size={24} />,
             value: phoneNumber,
             onChange: e => setPhoneNumber(e.target.value),
