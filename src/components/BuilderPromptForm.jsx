@@ -203,7 +203,7 @@ const BuilderPromptForm = () => {
         return;
       }
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/projects`,
+        `https://api.pressend.com/api/projects`,
         {
           method: "POST",
           headers: {
