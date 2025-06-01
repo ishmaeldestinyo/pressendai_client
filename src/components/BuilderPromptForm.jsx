@@ -203,7 +203,7 @@ const BuilderPromptForm = () => {
         return;
       }
       const response = await fetch(
-        `https://api.pressend.com/api/projects`,
+        `https://api.pressend.com/api/projects/`,
         {
           method: "POST",
           headers: {
